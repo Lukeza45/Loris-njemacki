@@ -1,0 +1,25 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (in case we ever add tooling)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Local dev artifacts
+*.log
+.env
+.env.local
+
+# Tesseract may cache language data locally
+*.traineddata
