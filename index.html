@@ -4,7 +4,66 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#4D96FF">
-<title>Čitamo Njemački! 🌟</title>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SEO METADATA — for Google Search and social media previews
+     ═══════════════════════════════════════════════════════════════ -->
+<title>Čitamo Njemački! 🌟 — Aplikacija za učenje čitanja njemačkog jezika</title>
+<meta name="description" content="Besplatna aplikacija za hrvatsku djecu koja uče čitati njemački. Slikaj zadaću, čuj izgovor, vježbaj samostalno čitanje, prevedi na hrvatski. Idealno za 1. i 2. razred.">
+<meta name="keywords" content="njemački jezik, čitanje, hrvatska djeca, zadaća, izgovor, deutsch, lesen, kinder, kroatisch, leseblatt, učenje njemačkog">
+<meta name="author" content="Čitamo Njemački!">
+<meta name="robots" content="index, follow">
+<meta name="language" content="hr">
+<link rel="canonical" href="https://loris-njemacki.vercel.app/">
+
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="hr_HR">
+<meta property="og:url" content="https://loris-njemacki.vercel.app/">
+<meta property="og:title" content="Čitamo Njemački! 🌟 — Učenje čitanja njemačkog">
+<meta property="og:description" content="Besplatna aplikacija za hrvatsku djecu. Slikaj zadaću, čuj izgovor, vježbaj samostalno čitanje, prevedi na hrvatski.">
+<meta property="og:image" content="https://loris-njemacki.vercel.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Čitamo Njemački!">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Čitamo Njemački! 🌟">
+<meta name="twitter:description" content="Aplikacija za hrvatsku djecu koja uče čitati njemački jezik">
+
+<!-- Structured data (Schema.org) — helps Google understand this is an educational web app -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Čitamo Njemački!",
+  "description": "Besplatna aplikacija za hrvatsku djecu koja uče čitati njemački jezik. Slikaj zadaću, čuj izgovor, vježbaj samostalno čitanje.",
+  "url": "https://loris-njemacki.vercel.app/",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Any (web-based)",
+  "inLanguage": ["hr", "de"],
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student",
+    "audienceType": "Children learning German as a second language"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  },
+  "featureList": [
+    "OCR — prepoznavanje teksta sa slike",
+    "TTS — njemački izgovor s podesivom brzinom",
+    "Vježba izgovora preko mikrofona",
+    "Hrvatski prijevod svake rečenice",
+    "Spremanje zadaća",
+    "Radi offline (PWA)"
+  ]
+}
+</script>
+
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌟%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌟%3C/text%3E%3C/svg%3E">
@@ -64,7 +123,37 @@ textarea.has-ocr{border-color:var(--c2);background:#fffef5}
 .cleanup-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--c3);color:#fff;padding:10px 20px;border-radius:14px;font-weight:800;font-size:14px;box-shadow:0 4px 20px rgba(107,203,119,.4);opacity:0;transition:opacity .25s,transform .25s;z-index:200;pointer-events:none}
 .cleanup-toast.on{opacity:1;transform:translateX(-50%) translateY(-10px)}
 
-/* PREVIEW screen — review sentences before reading */
+/* STREAK COUNTER — daily-practice motivation chip on setup screen */
+.streak-chip{position:absolute;top:12px;right:12px;display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#fff5cc,#ffd6a3);border:2px solid #ff9933;border-radius:18px;padding:5px 12px;font-weight:900;font-size:14px;color:#cc5500;cursor:pointer;transition:.15s;box-shadow:0 2px 10px rgba(255,153,51,.25);font-family:'Nunito',sans-serif;z-index:5}
+.streak-chip:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(255,153,51,.35)}
+.streak-chip.paused{background:linear-gradient(135deg,#f0f0f0,#e0e0e0);border-color:#999;color:#666}
+.streak-chip.zero{display:none}
+.streak-chip-fire{font-size:16px;animation:flicker 1.6s ease-in-out infinite}
+@keyframes flicker{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.08) rotate(2deg)}}
+
+/* Streak popup — shown when chip is tapped */
+.streak-pop{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:200;padding:1rem}
+.streak-pop.on{display:flex}
+.streak-pop-card{background:#fff;border-radius:24px;padding:2rem 1.75rem;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative}
+.streak-pop-close{position:absolute;top:10px;right:10px;width:32px;height:32px;border:none;background:#f3f0ff;border-radius:50%;font-size:18px;cursor:pointer;color:var(--mu);font-weight:800;font-family:'Nunito',sans-serif}
+.streak-pop-fire{font-size:64px;animation:flicker 1.6s ease-in-out infinite;margin-bottom:.5rem}
+.streak-pop-num{font-size:48px;font-weight:900;background:linear-gradient(90deg,#ff6600,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.streak-pop-lbl{font-size:13px;color:var(--mu);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+.streak-pop-best{font-size:14px;font-weight:700;color:var(--dark);margin-top:1rem;padding:8px 14px;background:#fff5cc;border-radius:10px}
+.streak-pop-next{font-size:13px;color:var(--mu);font-weight:600;margin-top:1rem;line-height:1.5}
+
+/* Milestone celebration — shown when reaching 3/7/14/30 days */
+.milestone-overlay{position:fixed;inset:0;background:linear-gradient(135deg,rgba(255,217,61,.95),rgba(255,142,114,.95));display:none;align-items:center;justify-content:center;z-index:300;flex-direction:column;gap:1rem;animation:fadein .35s ease;padding:2rem;text-align:center}
+.milestone-overlay.on{display:flex}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.milestone-num{font-size:96px;font-weight:900;color:#1a1035;text-shadow:0 4px 20px rgba(0,0,0,.2);line-height:1;animation:bouncein .6s cubic-bezier(.68,-0.55,.27,1.55)}
+@keyframes bouncein{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.milestone-label{font-size:24px;font-weight:900;color:#1a1035;text-shadow:0 2px 10px rgba(0,0,0,.15)}
+.milestone-emoji{font-size:80px;animation:bouncein .6s cubic-bezier(.68,-0.55,.27,1.55) .2s both}
+.milestone-tap{font-size:14px;color:rgba(26,16,53,.6);font-weight:700;margin-top:1.5rem;animation:pulse-fade 1.5s ease-in-out infinite}
+@keyframes pulse-fade{0%,100%{opacity:.5}50%{opacity:1}}
+
+.setup-actions{display:flex;gap:8px}
 .prev-card{background:var(--card);border:2px solid var(--bdr);border-radius:14px;padding:.75rem .85rem;display:flex;align-items:center;gap:8px;transition:.15s}
 .prev-card:focus-within{border-color:var(--c4);background:#fafaff}
 .prev-card.editing{border-color:var(--c4);background:#fafaff}
@@ -132,7 +221,7 @@ textarea.has-ocr{border-color:var(--c2);background:#fffef5}
 .k-dot.done{background:var(--c3)}.k-dot.cur{background:var(--c2);box-shadow:0 0 6px rgba(255,217,61,.6)}
 
 /* German text */
-.ksent-box{background:rgba(255,255,255,.07);border-radius:20px;padding:1.5rem;border:2px solid rgba(255,255,255,.1);min-height:90px}
+.ksent-box{background:rgba(255,255,255,.07);border-radius:20px;padding:1.5rem;border:2px solid rgba(255,255,255,.1);min-height:90px;position:relative}
 #ksent{font-size:26px;font-weight:800;line-height:2.1;color:#f0f0ff;word-spacing:3px}
 .kw{display:inline;border-radius:8px;padding:3px 5px;cursor:pointer;transition:background .08s,color .08s;font-weight:800}
 .kw:hover{background:rgba(255,217,61,.2);color:#FFD93D}
@@ -174,6 +263,21 @@ textarea.has-ocr{border-color:var(--c2);background:#fffef5}
 
 .k-prev{font-size:12px;color:rgba(255,255,255,.22);font-weight:600;font-style:italic;padding:0 .25rem;min-height:14px}
 .k-next-p{font-size:12px;color:rgba(255,255,255,.28);font-weight:600;padding:0 .25rem;min-height:14px}
+
+/* Homework switcher in karaoke screen — appears below Croatian translation
+   so the parent can switch to a different saved homework without going back
+   to setup. */
+.k-hw-switch{margin-top:.5rem;padding:.5rem .25rem 0}
+.k-hw-switch-lbl{font-size:11px;font-weight:800;letter-spacing:.07em;color:rgba(255,255,255,.45);text-transform:uppercase;padding:0 6px 6px}
+.k-hw-chips{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 6px;-webkit-overflow-scrolling:touch}
+.k-hw-chips::-webkit-scrollbar{height:4px}
+.k-hw-chips::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+.k-hw-chip{flex-shrink:0;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:12px;padding:6px 12px;font-size:12px;font-weight:800;color:rgba(255,255,255,.85);cursor:pointer;transition:.12s;display:flex;align-items:center;gap:5px;font-family:'Nunito',sans-serif;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.k-hw-chip:hover{background:rgba(255,217,61,.15);border-color:rgba(255,217,61,.4);color:#fff}
+.k-hw-chip.active{background:linear-gradient(135deg,rgba(255,217,61,.25),rgba(255,142,114,.25));border-color:#FFD93D;color:#FFD93D;cursor:default}
+.k-hw-chip-ic{font-size:13px;flex-shrink:0}
+.k-hw-chip-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
 .k-next-btn{display:none;width:100%;padding:12px;border-radius:14px;background:linear-gradient(135deg,var(--c3),#20bf6b);border:none;color:#fff;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 16px rgba(107,203,119,.35);animation:pulse-btn .8s ease-in-out infinite alternate}
 .k-next-btn.on{display:block}
 @keyframes pulse-btn{from{transform:scale(1)}to{transform:scale(1.02)}}
@@ -232,7 +336,14 @@ textarea.has-ocr{border-color:var(--c2);background:#fffef5}
      SETUP SCREEN — user pastes/photographs German homework
      ═══════════════════════════════════════════════════════════════ -->
 <div class="scr on" id="s-setup">
-  <div class="page-head"><span class="em">🌟</span><h1>Čitamo Njemački!</h1><p>Za roditelja: pripremi tekst zadaće</p></div>
+  <div class="page-head" style="position:relative">
+    <span class="em">🌟</span>
+    <h1>Čitamo Njemački!</h1>
+    <p>Za roditelja: pripremi tekst zadaće</p>
+    <button class="streak-chip zero" id="streak-chip" onclick="showStreakPopup()">
+      <span class="streak-chip-fire">🔥</span><span id="streak-chip-num">0</span>
+    </button>
+  </div>
   <div class="main-card">
     <div class="install-banner" id="install-banner" onclick="promptInstall()">
       📱 Dodaj na početni ekran — brže pokretanje!
@@ -291,6 +402,26 @@ textarea.has-ocr{border-color:var(--c2);background:#fffef5}
 
 <!-- TOAST notifications (positioned fixed) -->
 <div class="cleanup-toast" id="cleanup-toast"></div>
+
+<!-- STREAK POPUP (shown when chip is tapped) -->
+<div class="streak-pop" id="streak-pop" onclick="if(event.target.id==='streak-pop')hideStreakPopup()">
+  <div class="streak-pop-card">
+    <button class="streak-pop-close" onclick="hideStreakPopup()">×</button>
+    <div class="streak-pop-fire">🔥</div>
+    <div class="streak-pop-num" id="streak-pop-num">0</div>
+    <div class="streak-pop-lbl" id="streak-pop-lbl">DANA ZAREDOM</div>
+    <div class="streak-pop-best" id="streak-pop-best">Najbolji niz: 0 dana</div>
+    <div class="streak-pop-next" id="streak-pop-next"></div>
+  </div>
+</div>
+
+<!-- MILESTONE celebration (shown when reaching 3/7/14/30 days) -->
+<div class="milestone-overlay" id="milestone-overlay" onclick="hideMilestone()">
+  <div class="milestone-emoji" id="milestone-emoji">🎉</div>
+  <div class="milestone-num" id="milestone-num">7</div>
+  <div class="milestone-label" id="milestone-label">DANA ZAREDOM!</div>
+  <div class="milestone-tap">Klikni za nastavak</div>
+</div>
 
 <!-- QUICK-ACCESS HISTORY CHIPS (floats at bottom of setup screen) -->
 <div class="hw-chips-bar" id="hw-chips-bar">
@@ -386,6 +517,10 @@ textarea.has-ocr{border-color:var(--c2);background:#fffef5}
       <div class="ktrans-lbl">🇭🇷 Na hrvatskom</div>
       <div id="ktrans"></div>
     </div>
+    <div class="k-hw-switch" id="k-hw-switch" style="display:none">
+      <div class="k-hw-switch-lbl">📂 Druge spremljene zadaće</div>
+      <div class="k-hw-chips" id="k-hw-chips"></div>
+    </div>
     <div id="k-next-p" class="k-next-p"></div>
     <button class="k-next-btn" id="k-next-btn" onclick="advanceSent()">Sljedeća rečenica ➡️</button>
   </div>
@@ -410,6 +545,7 @@ textarea.has-ocr{border-color:var(--c2);background:#fffef5}
    ║  STATE                                                         ║
    ╚═══════════════════════════════════════════════════════════════╝ */
 let sentences=[], translations=[];
+let _currentHomeworkId = null;   // ID of currently-loaded homework (for k-hw-chips active state)
 let sentIdx=0, wordData=[];
 let isPlaying=false, currentUtt=null;
 let spd=0.72, voiceGender='f';
@@ -443,6 +579,9 @@ window.onload=()=>{
 
   // Populate recent-homework chips at bottom of setup screen
   renderHomeworkChips();
+
+  // Refresh streak chip with current state (handles missed days, etc.)
+  refreshStreakChip();
 
   // Try silent mic permission (so user doesn't have to click the banner).
   // After granting, START the always-on background recognition session. Chrome
@@ -493,6 +632,168 @@ function restoreSettings(){
 }
 function saveSettings(){
   localStorage.setItem(LS_SETTINGS,JSON.stringify({spd,voice:voiceGender}));
+}
+
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  STREAK COUNTER                                                ║
+   ║                                                                ║
+   ║  Tracks daily-practice streak. Increments by 1 each new day    ║
+   ║  the kid completes at least one karaoke session.               ║
+   ║                                                                ║
+   ║  Forgiveness rule: 1 missed day → "paused" (still saves the    ║
+   ║  streak). 2+ missed days → reset to 0. This reduces the        ║
+   ║  "missed yesterday so why bother" demotivation pattern.        ║
+   ║                                                                ║
+   ║  Milestones: 3, 7, 14, 30, 60, 100 days trigger a celebration  ║
+   ║  overlay the first time they're reached in any single streak.  ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+const LS_STREAK = 'de_hw_streak';
+const STREAK_MILESTONES = [3, 7, 14, 30, 60, 100];
+
+/* Get today's date as YYYY-MM-DD (Croatia time). */
+function todayISO(){
+  const d = new Date();
+  // toISOString uses UTC; we want local date. Adjust for timezone offset.
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
+}
+
+/* Compute days between two ISO date strings (positive = a is later). */
+function daysBetween(aISO, bISO){
+  const a = new Date(aISO + 'T00:00:00');
+  const b = new Date(bISO + 'T00:00:00');
+  return Math.round((a - b) / (1000 * 60 * 60 * 24));
+}
+
+function loadStreak(){
+  try{
+    const s = JSON.parse(localStorage.getItem(LS_STREAK) || '{}');
+    return {
+      count: s.count || 0,
+      lastDate: s.lastDate || null,
+      maxEver: s.maxEver || 0,
+      milestonesHit: Array.isArray(s.milestonesHit) ? s.milestonesHit : [],
+    };
+  }catch{
+    return { count: 0, lastDate: null, maxEver: 0, milestonesHit: [] };
+  }
+}
+
+function saveStreak(s){
+  localStorage.setItem(LS_STREAK, JSON.stringify(s));
+}
+
+/* Returns the current effective streak — accounts for missed days.
+   Called on app load to update the chip. */
+function effectiveStreak(){
+  const s = loadStreak();
+  if(!s.lastDate || s.count === 0) return { ...s, paused: false };
+  const days = daysBetween(todayISO(), s.lastDate);
+  if(days === 0 || days === 1) return { ...s, paused: false };
+  if(days === 2) return { ...s, paused: true };
+  // 3+ days missed — reset to 0
+  return { count: 0, lastDate: null, maxEver: s.maxEver, milestonesHit: [], paused: false };
+}
+
+/* Called when a karaoke session completes successfully.
+   Increments streak if today wasn't already counted. Returns the new
+   streak object plus whether a milestone was reached this time. */
+function recordPracticeForToday(){
+  let s = loadStreak();
+  const today = todayISO();
+
+  // Already practiced today? No-op.
+  if(s.lastDate === today) return { ...s, milestoneReached: null };
+
+  // Determine new count
+  let newCount;
+  if(!s.lastDate){
+    newCount = 1;  // first ever
+  } else {
+    const days = daysBetween(today, s.lastDate);
+    if(days === 1){
+      newCount = s.count + 1;  // perfect continuation
+    } else if(days === 2){
+      newCount = s.count + 1;  // forgiveness — count yesterday's "pause" + today
+    } else {
+      newCount = 1;  // 3+ days missed — restart
+    }
+  }
+
+  // Check for milestone
+  let milestoneReached = null;
+  for(const m of STREAK_MILESTONES){
+    if(newCount === m && !s.milestonesHit.includes(m)){
+      milestoneReached = m;
+      s.milestonesHit = [...s.milestonesHit, m];
+      break;
+    }
+  }
+  // If streak reset, also reset milestone history
+  if(newCount === 1 && s.count > 1){
+    s.milestonesHit = [];
+  }
+
+  s.count = newCount;
+  s.lastDate = today;
+  s.maxEver = Math.max(s.maxEver, newCount);
+  saveStreak(s);
+  return { ...s, milestoneReached };
+}
+
+/* Update the chip on the setup screen to reflect current streak. */
+function refreshStreakChip(){
+  const s = effectiveStreak();
+  const chip = document.getElementById('streak-chip');
+  const num = document.getElementById('streak-chip-num');
+  if(!chip || !num) return;
+  num.textContent = s.count;
+  chip.classList.toggle('zero', s.count === 0);
+  chip.classList.toggle('paused', s.paused);
+  if(s.paused){
+    chip.title = 'Pauza — vrati se danas da nastaviš niz!';
+  } else if(s.count > 0){
+    chip.title = `${s.count} ${s.count === 1 ? 'dan' : s.count < 5 ? 'dana' : 'dana'} zaredom — nastavi tako!`;
+  }
+}
+
+function showStreakPopup(){
+  const s = effectiveStreak();
+  document.getElementById('streak-pop-num').textContent = s.count;
+  document.getElementById('streak-pop-lbl').textContent = s.paused
+    ? 'PAUZA — VRATI SE!'
+    : (s.count === 1 ? 'DAN ZAREDOM' : 'DANA ZAREDOM');
+  document.getElementById('streak-pop-best').textContent = `🏆 Najbolji niz: ${s.maxEver} ${s.maxEver === 1 ? 'dan' : 'dana'}`;
+  // Days until next milestone
+  const next = STREAK_MILESTONES.find(m => m > s.count);
+  const nextEl = document.getElementById('streak-pop-next');
+  if(next){
+    const remaining = next - s.count;
+    nextEl.innerHTML = `Još ${remaining} ${remaining === 1 ? 'dan' : 'dana'} do <b>${next}-dnevnog niza</b>! 🎯`;
+  } else if(s.count > 0){
+    nextEl.textContent = '🎉 Prešao si sve milestoneove! Nastavi!';
+  } else {
+    nextEl.textContent = 'Završi jednu zadaću danas da pokreneš niz! 🚀';
+  }
+  document.getElementById('streak-pop').classList.add('on');
+}
+
+function hideStreakPopup(){
+  document.getElementById('streak-pop').classList.remove('on');
+}
+
+function showMilestone(days){
+  const emojis = { 3: '🌱', 7: '🔥', 14: '💪', 30: '🏆', 60: '⭐', 100: '👑' };
+  document.getElementById('milestone-emoji').textContent = emojis[days] || '🎉';
+  document.getElementById('milestone-num').textContent = days;
+  document.getElementById('milestone-label').textContent = days === 1 ? 'DAN ZAREDOM!' : 'DANA ZAREDOM!';
+  document.getElementById('milestone-overlay').classList.add('on');
+  // Big confetti burst
+  burst(); burst(); burst();
+}
+
+function hideMilestone(){
+  document.getElementById('milestone-overlay').classList.remove('on');
 }
 
 /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1186,11 +1487,14 @@ function saveHomework(){
   const hist=loadHistory();
   // Dedupe by name — overwrite same name rather than pile up
   const existingIdx=hist.findIndex(h=>h.name===name);
-  const entry={id:Date.now(),name,text,translations,date:new Date().toLocaleDateString('hr-HR'),count:sentences.length};
+  // Reuse existing ID if overwriting, otherwise new ID
+  const id = existingIdx >= 0 ? hist[existingIdx].id : Date.now();
+  const entry={id,name,text,translations,date:new Date().toLocaleDateString('hr-HR'),count:sentences.length};
   if(existingIdx>=0) hist[existingIdx]=entry;
   else hist.unshift(entry);
   if(hist.length>30) hist.length=30;
   saveHistory(hist);
+  _currentHomeworkId = id;
   renderHomeworkChips();
 }
 function showHistory(){
@@ -1232,11 +1536,63 @@ function deleteHistory(id,e){ e.stopPropagation(); saveHistory(loadHistory().fil
 function loadFromHistory(h){
   document.getElementById('de-ta').value=h.text;
   document.getElementById('hw-name').value=h.name; enableBtns();
+  _currentHomeworkId = h.id;
   if(h.translations && h.translations.length){
     sentences=splitSentences(h.text); translations=h.translations;
     document.getElementById('kh-title').textContent='🌟 '+h.name;
-    sentIdx=0; buildDots(); renderSent(0); show('s-kara');
+    sentIdx=0; buildDots(); renderSent(0);
+    renderKaraHomeworkChips();
+    show('s-kara');
   }else{ show('s-setup'); }
+}
+
+/* Render homework switcher chips inside the karaoke screen.
+   Shown below the Croatian translation. Tap a chip to switch to that
+   saved homework without going back to setup. */
+function renderKaraHomeworkChips(){
+  const wrap = document.getElementById('k-hw-switch');
+  const container = document.getElementById('k-hw-chips');
+  const hist = loadHistory();
+  // If only the current homework is saved (or nothing), no point showing
+  const others = hist.filter(h => h.id !== _currentHomeworkId);
+  if(others.length === 0){
+    wrap.style.display = 'none';
+    return;
+  }
+  wrap.style.display = 'block';
+  container.innerHTML = '';
+  // Show ALL other homeworks, not just 6 — kid scrolls horizontally
+  others.forEach(h => {
+    const chip = document.createElement('div');
+    chip.className = 'k-hw-chip';
+    chip.innerHTML = `<span class="k-hw-chip-ic">📄</span><span class="k-hw-chip-name">${esc(h.name)}</span>`;
+    chip.onclick = () => switchKaraokeHomework(h);
+    container.appendChild(chip);
+  });
+}
+
+/* Switch the karaoke session to a different saved homework.
+   Stops current speech, loads the new sentences and translations,
+   resets to sentence 1, and re-renders the chip strip. */
+function switchKaraokeHomework(h){
+  if(!h || h.id === _currentHomeworkId) return;
+  stopSpeech();
+  isListening = false;
+  clearCountdown();
+  _currentHomeworkId = h.id;
+  sentences = splitSentences(h.text);
+  translations = (h.translations && h.translations.length === sentences.length)
+    ? h.translations
+    : new Array(sentences.length).fill('—');
+  document.getElementById('kh-title').textContent = '🌟 ' + h.name;
+  sentIdx = 0;
+  buildDots();
+  renderSent(0);
+  renderKaraHomeworkChips();
+  // Scroll the new chip into "active" position visually — actually no, the chip
+  // is REMOVED from the list since it's now active (only "others" are shown).
+  // So just scroll the strip back to start to make it tidy.
+  document.getElementById('k-hw-chips').scrollLeft = 0;
 }
 
 /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1410,8 +1766,11 @@ async function commitPreviewAndStart(){
   document.getElementById('ld-b').style.width='100%';
   if(!deVoices.length) pickVoices();
   if(_previewSaveOnCommit) saveHomework();
+  // If save flag wasn't set, this homework isn't in history — no current ID
+  if(!_previewSaveOnCommit) _currentHomeworkId = null;
   sentIdx=0; buildDots(); renderSent(0);
   document.getElementById('kh-title').textContent='🌟 '+(document.getElementById('hw-name').value.trim()||'Čitamo!');
+  renderKaraHomeworkChips();
   show('s-kara');
   if(!deVoices.length){ const w=document.getElementById('voice-warn'); w.textContent='⚠️ Nema njemačkog glasa. Instaliraj: Postavke → Govor → Deutsch'; w.classList.add('on'); }
 }
@@ -1463,7 +1822,11 @@ function renderSent(idx){
 /* ╔═══════════════════════════════════════════════════════════════╗
    ║  HIGHLIGHT                                                     ║
    ╚═══════════════════════════════════════════════════════════════╝ */
-function clearHi(){ document.querySelectorAll('.kw.hi,.kw.replay').forEach(el=>{ el.classList.remove('hi'); el.classList.remove('replay'); }); }
+function clearHi(){
+  document.querySelectorAll('.kw.hi,.kw.replay').forEach(el=>{
+    el.classList.remove('hi'); el.classList.remove('replay');
+  });
+}
 function hiWord(deIdx){
   document.querySelectorAll('.kw.hi').forEach(el=>el.classList.remove('hi'));
   const deEl=document.getElementById('kw'+deIdx);
@@ -1674,7 +2037,19 @@ function onSentEnd(){ burst(); document.getElementById('k-next-btn').classList.a
 function goSent(idx){ if(idx<0 || idx>=sentences.length) return; stopSpeech(); renderSent(idx); }
 function advanceSent(){
   if(sentIdx<sentences.length-1) goSent(sentIdx+1);
-  else{ const b=document.getElementById('k-next-btn'); b.textContent='🎉 Bravo! Sve pročitano!'; b.onclick=goSetup; burst(); burst(); }
+  else{
+    // All sentences done — count this as a completed session for the streak
+    const result = recordPracticeForToday();
+    const b=document.getElementById('k-next-btn');
+    b.textContent='🎉 Bravo! Sve pročitano!';
+    b.onclick=goSetup;
+    burst(); burst();
+    // If hit a milestone today, show celebration overlay after a short delay
+    // so the user sees the "Bravo!" message first.
+    if(result.milestoneReached){
+      setTimeout(()=>showMilestone(result.milestoneReached), 1200);
+    }
+  }
 }
 
 /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1835,7 +2210,7 @@ function processMicResult(spoken){
 /* ╔═══════════════════════════════════════════════════════════════╗
    ║  NAV + CONFETTI                                                ║
    ╚═══════════════════════════════════════════════════════════════╝ */
-function goSetup(){ stopSpeech(); isListening=false; clearCountdown(); show('s-setup'); renderHomeworkChips(); }
+function goSetup(){ stopSpeech(); isListening=false; clearCountdown(); show('s-setup'); renderHomeworkChips(); refreshStreakChip(); }
 
 function burst(){
   ['⭐','🌟','✨','🎉','👏','🏆','🎊','💛'].forEach((em,i)=>{
