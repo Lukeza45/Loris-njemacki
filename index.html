@@ -230,6 +230,10 @@ textarea:focus{border-color:var(--c4)}
         <input type="file" id="finput" accept="image/jpeg,image/png,image/webp,image/bmp">
         <span class="di">📷</span><h3>Učitaj fotografiju zadaće</h3><p>Klikni ili prevuci · JPG PNG WEBP</p>
       </div>
+      <label class="ocr-opt" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f3f0ff;border-radius:10px;font-size:12px;color:var(--mu);font-weight:700;cursor:pointer;margin-top:8px">
+        <input type="checkbox" id="include-drills" style="width:16px;height:16px;accent-color:var(--c4);cursor:pointer">
+        <span>📚 Uključi vježbe slogova (spa, spe, spi…)</span>
+      </label>
       <div class="ocr-row" id="ocr-row"><span id="ocr-msg">Pripremam sliku...</span><div class="ocr-bw"><div class="ocr-b" id="ocr-b"></div></div></div>
       <div class="ocr-preview" id="ocr-preview">
         <div class="ocr-preview-lbl">Obrađena slika</div>
@@ -703,6 +707,200 @@ drop.addEventListener('dragover',e=>{ e.preventDefault(); drop.classList.add('ov
 drop.addEventListener('dragleave',()=>drop.classList.remove('ov'));
 drop.addEventListener('drop',e=>{ e.preventDefault(); drop.classList.remove('ov'); if(e.dataTransfer.files[0]) doOCR(e.dataTransfer.files[0]); });
 
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  GERMAN DICTIONARY for syllable-merge validation               ║
+   ║                                                                ║
+   ║  Curated ~580 common German words covering 1st-grade reading   ║
+   ║  vocabulary plus the Sp/St theme. Used to validate "should we  ║
+   ║  merge these two adjacent OCR tokens?" — only merge when the   ║
+   ║  result is a real word.                                        ║
+   ║                                                                ║
+   ║  When OCR returns "Wes pe" (an intentional syllable split in   ║
+   ║  homework material), we check: is "Wespe" in this dictionary?  ║
+   ║  Yes → merge. If we'd produce "blauStreifen" instead, no.      ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+const GERMAN_WORDS = new Set(["abend","aber","acht","achtzehn","als","alt","am","ameise","ameisen","an","anna","apfel","april","arbeite","arbeiten","arbeitest","arbeitet","arbeitete","auch","auf","august","aus","auto","autos","aß","ball","banane","bananen","bei","ben","berg","berge","bett","betten","biene","bienen","bin","birne","birnen","bist","bitte","blau","boden","bonbon","bonbons","boot","boote","brachte","braun","bringe","bringen","bringst","bringt","brot","brote","bruder","buch","bunt","bunte","bus","busse","butter","bälle","bär","bären","bücher","cousin","cousine","da","dach","dachte","danke","dann","das","dass","david","dein","dem","den","denke","denken","denkst","denkt","der","des","dezember","dick","die","dienstag","direktor","doch","donnerstag","dorf","dort","drei","dreizehn","dritte","du","dunkel","dörfer","dünn","ein","eine","einem","einen","einer","eines","eins","eis","elf","eltern","emma","ente","enten","entschuldigung","er","erdbeere","erdbeeren","erste","es","esse","essen","euer","fahrrad","fahrräder","familie","fand","februar","felix","fenster","finde","finden","findest","findet","finn","fisch","fische","fliege","fliegen","flugzeug","fluss","flüsse","frage","fragen","fragst","fragt","fragte","freitag","freund","freunde","freundin","frosch","frösche","frühling","fuchs","fünf","fünfte","fünfzehn","gab","gans","ganz","garten","gearbeitet","gebe","geben","gebracht","gedacht","gefragt","gefunden","gegangen","gegeben","gegessen","gehe","gehen","gehst","geht","gehört","geknuspert","gekommen","gelaufen","gelb","gelesen","gemacht","gemalt","genommen","gesagt","geschlafen","geschrieben","gesehen","gespart","gespielt","gesponnen","gesprochen","gesprungen","gestanden","gestellt","gestempelt","gestern","gestreckt","gestreift","gesucht","gesungen","getanzt","getrunken","gewartet","gewusst","gezeichnet","gezogen","gibst","gibt","ging","grau","groß","grün","gurke","gurken","gut","guten","gänse","gärten","haben","hahn","hallo","hanna","hans","hase","hasen","hat","haus","hausmeister","heft","hefte","heinz","heiß","hell","henne","herbst","heute","hier","hinter","hoch","hund","hunde","hundert","hässlich","hätte","häuser","höre","hören","hörst","hört","hörte","ich","ihr","ihre","im","in","insekt","insekten","insel","inseln","isst","ist","ja","jahr","jahre","jan","januar","jetzt","jonas","juli","julia","junge","juni","kaffee","kakao","kalt","kam","karl","karotte","karotten","karten","kartoffel","kartoffeln","kasper","katze","katzen","kein","keine","keinen","keks","kekse","keller","kind","kinder","kindergarten","kirsche","kirschen","kiste","kisten","klasse","klassen","klaus","klein","knuspere","knuspern","knusperst","knuspert","knusperte","komme","kommen","kommst","kommt","korb","kuchen","kuh","kurz","käfer","käse","körbe","kühe","kühl","land","lang","langsam","lara","las","laufe","laufen","lebkuchen","lebkuchenhaus","lehrer","lehrerin","lena","leon","lese","lesen","lief","liegen","liest","lila","lisa","lukas","länder","läufst","läuft","mache","machen","machst","macht","machte","mai","male","malen","malst","malt","malte","mama","maria","maus","max","meer","meere","mehr","mein","mia","milch","million","minute","minuten","mit","mittag","mittwoch","monat","monate","mond","montag","morgen","mutter","mädchen","märz","mäuse","mücke","mücken","nachmittag","nacht","nahm","nass","natalie","neben","nehme","nehmen","nein","netz","netze","neu","neun","neunzehn","nicht","nichts","niedrig","nimmst","nimmt","noah","noch","november","nur","ob","oder","oktober","oma","onkel","opa","orange","otto","papa","park","parks","passen","paul","peter","pferd","pferde","puppe","puppen","rechnen","regal","regale","regen","rosa","rot","rote","rucksack","rucksäcke","sack","saft","sage","sagen","sagst","sagt","sagte","sah","salat","samstag","sang","sarah","schachtel","schachteln","schaf","schafe","schenken","schiff","schiffe","schlafe","schlafen","schlecht","schlief","schläfst","schläft","schmetterling","schnee","schnell","schokolade","schon","schrank","schreibe","schreiben","schreibst","schreibt","schrieb","schränke","schuhe","schule","schulen","schwarz","schwein","schweine","schwester","schön","schüler","schülerin","sechs","sechzehn","see","seen","sehe","sehen","sehr","seid","sein","sekunde","september","sich","sie","sieben","siebzehn","siehst","sieht","sind","singe","singen","singst","singt","sitzen","sofia","sommer","sonne","sonntag","spann","spare","sparen","sparst","spart","sparte","spaten","spaziere","spazieren","spazierst","spaziert","spazierte","spaß","specht","speck","spiegel","spiel","spiele","spielen","spielst","spielt","spielte","spielzeug","spielzeuge","spinat","spinne","spinnen","spinnennetz","spinnst","spinnt","sport","sportschuhe","sprach","sprache","sprang","spreche","sprechen","sprichst","spricht","springe","springen","springst","springt","stadt","stand","stehe","stehen","stehst","steht","stein","steine","stelle","stellen","stellst","stellt","stellte","stempeln","stempelst","stempelt","stempelte","stemple","stern","sterne","stiefel","stift","stifte","strand","straße","straßen","strecke","strecken","streckst","streckt","streckte","streife","streifen","streifst","streift","streifte","strich","striche","stroh","strom","strände","stube","studie","stuhl","stunde","stunden","städte","stühle","suche","suchen","suchst","sucht","suchte","suppe","säcke","tag","tage","tante","tanze","tanzen","tanzt","tanzte","tasche","taschen","tausend","tee","tim","tisch","tische","tom","tomate","tomaten","trank","treppe","treppen","trinke","trinken","trinkst","trinkt","trocken","tschüss","turnen","tür","türen","tüte","tüten","und","unser","unter","vater","verfange","verfangen","verfing","verfängst","verfängt","viel","vielleicht","vier","vierte","vierzehn","vogel","von","vor","vögel","wald","wand","wann","war","waren","warm","warte","warten","wartest","wartet","wartete","was","wasser","weil","weiß","weißt","wenig","weniger","wenn","wer","werden","werfen","werner","wespe","wespen","wie","willkommen","wind","winter","wir","wird","wissen","wo","woche","wochen","wochenende","wohin","wolke","wolken","wurst","wusste","wälder","wände","wäre","würde","würfel","zehn","zeichne","zeichnen","zeichnest","zeichnet","zeichnete","zeigen","ziehe","ziehen","ziehst","zieht","zog","zu","zug","zwanzig","zwei","zweite","zwischen","zwölf","züge","äpfel","über"]);
+
+/* Lookup with case-insensitive match. Tries lowercase, also tries
+   capitalized version (German nouns are capitalized — "Wespe" not "wespe"). */
+function isGermanWord(s){
+  if(!s) return false;
+  const low = s.toLowerCase();
+  return GERMAN_WORDS.has(low);
+}
+
+/* ╔═══════════════════════════════════════════════════════════════╗
+   ║  POST-PROCESSING PIPELINE                                      ║
+   ║                                                                ║
+   ║  Takes raw OCR text plus word/line metadata and produces       ║
+   ║  cleaned-up reading material:                                  ║
+   ║    1. Drop low-confidence words (<60%)                         ║
+   ║    2. Detect and skip drill-content lines (3-letter cells)     ║
+   ║    3. Drop title/metadata lines                                ║
+   ║    4. Merge syllable splits with dictionary validation         ║
+   ║    5. Keep only sentence-shaped lines                          ║
+   ║                                                                ║
+   ║  The "include phonetic tables" toggle (parent decides) reads   ║
+   ║  the include-drill-content checkbox.                           ║
+   ╚═══════════════════════════════════════════════════════════════╝ */
+
+/* Heuristic: is this line a row from a phonetic-drill table?
+   Drill rows look like: "spa spe spi spo spu" or "ste sti sta stu sto"
+   - 3+ short tokens (2-5 chars each)
+   - All lowercase
+   - Most start with 's' (sp, st patterns) OR similar consistent prefix
+   - No verbs/articles like "ist", "der", "die"
+   - No punctuation
+*/
+function isDrillLine(line){
+  const tokens = line.trim().split(/\s+/).filter(Boolean);
+  if(tokens.length < 3) return false;
+  const shortCount = tokens.filter(t => t.length >= 2 && t.length <= 5).length;
+  if(shortCount < tokens.length * 0.7) return false;
+  // No real-sentence punctuation
+  if(/[.!?]/.test(line)) return false;
+  // Check if mostly lowercase (drill rows are; sentences start capitalized)
+  const lowerCount = tokens.filter(t => t === t.toLowerCase()).length;
+  if(lowerCount < tokens.length * 0.8) return false;
+  // Most starts with same letter pair? (sp, st)
+  const prefixes = tokens.map(t => t.substring(0,2));
+  const prefixCount = {};
+  prefixes.forEach(p => prefixCount[p] = (prefixCount[p]||0)+1);
+  const maxPrefix = Math.max(...Object.values(prefixCount));
+  if(maxPrefix >= tokens.length * 0.6) return true;
+  // Or: all tokens are short syllable-like (no real vocabulary)
+  const hasReal = tokens.some(t => isGermanWord(t));
+  if(!hasReal && shortCount === tokens.length) return true;
+  return false;
+}
+
+/* Heuristic: is this line metadata (title/header/grid)?
+   Examples: "Leseblatt 23", "Name:", "Montag Dienstag Mittwoch"
+*/
+function isMetaLine(line){
+  const t = line.trim();
+  if(t.length === 0) return true;
+  // Days of week as a row
+  const days = /\b(montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag)\b/gi;
+  const dayMatches = (t.match(days) || []).length;
+  if(dayMatches >= 3) return true;
+  // Worksheet headers
+  if(/^leseblatt\s*\d+/i.test(t)) return true;
+  if(/^name\s*[:.]?/i.test(t)) return true;
+  // Just numbers/dates
+  if(/^[\d\s.,\-/]+$/.test(t)) return true;
+  // Single character or symbol garbage
+  if(t.length < 3) return true;
+  // Instruction-only headers like "Ich sehe und schreibe..."
+  // (these are intentionally drill-context, parent can include if wanted)
+  if(/^ich sehe und schreibe/i.test(t)) return false; // KEEP — useful sentence
+  return false;
+}
+
+/* Try to merge two adjacent OCR tokens into a single German word.
+   Returns merged string if valid, null if not.
+   Handles "Wes pe" → "Wespe", "Kas per" → "Kasper", "Kis te" → "Kiste". */
+function tryMerge(t1, t2){
+  if(!t1 || !t2) return null;
+  // Both should be short enough to be syllable parts (not long words)
+  if(t1.length > 6 || t2.length > 6) return null;
+  // No internal punctuation
+  if(/[^a-zA-ZäöüÄÖÜß]/.test(t1) || /[^a-zA-ZäöüÄÖÜß]/.test(t2)) return null;
+  const merged = t1 + t2;
+  if(isGermanWord(merged)) return merged;
+  // Also try: merged result may need final 's' or 'n' (plurals)
+  // Skip — too risky for false merges
+  return null;
+}
+
+/* Merge syllable splits across a line.
+   Walks left-to-right, when (token + next-token) forms a real word, merge.
+   Preserves capitalization of the first part. */
+function mergeSyllables(line){
+  const tokens = line.split(/(\s+)/);  // keep whitespace tokens
+  const result = [];
+  let i = 0;
+  while(i < tokens.length){
+    const t = tokens[i];
+    if(/^\s+$/.test(t)){ result.push(t); i++; continue; }
+    // Find next non-whitespace
+    let j = i + 1;
+    while(j < tokens.length && /^\s+$/.test(tokens[j])) j++;
+    if(j < tokens.length){
+      const merged = tryMerge(t, tokens[j]);
+      if(merged){
+        // Preserve first-letter capitalization of t
+        const cap = t[0] === t[0].toUpperCase()
+          ? merged[0].toUpperCase() + merged.slice(1)
+          : merged;
+        result.push(cap);
+        i = j + 1;  // skip whitespace + merged token
+        continue;
+      }
+    }
+    result.push(t);
+    i++;
+  }
+  return result.join('');
+}
+
+/* Main post-processor: takes raw OCR output, returns cleaned text. */
+function postProcessOCR(rawText, words, lines){
+  // Optionally drop low-confidence words first
+  // (Tesseract gives word-level confidence in `words` array)
+  const lowConfWords = new Set();
+  if(words && words.length){
+    for(const w of words){
+      if(typeof w.confidence === 'number' && w.confidence < 60 && w.text){
+        lowConfWords.add(w.text);
+      }
+    }
+  }
+
+  // Should we include drill content? Read the toggle (default off).
+  const includeDrills = document.getElementById('include-drills')?.checked || false;
+
+  // Process line-by-line
+  const inputLines = rawText.split('\n').map(l => l.trim());
+  const outputLines = [];
+
+  for(const line of inputLines){
+    if(line.length === 0) continue;
+
+    // Skip metadata
+    if(isMetaLine(line)) continue;
+
+    // Detect drill lines
+    if(isDrillLine(line)){
+      if(!includeDrills) continue;
+      // If included, just pass through (don't try to merge syllables in drills)
+      outputLines.push(line);
+      continue;
+    }
+
+    // Filter low-confidence words from this line
+    let filtered = line;
+    if(lowConfWords.size > 0){
+      const lineTokens = line.split(/\s+/);
+      const kept = lineTokens.filter(t => !lowConfWords.has(t));
+      // Only apply filter if we don't lose more than half the line
+      if(kept.length >= lineTokens.length * 0.5){
+        filtered = kept.join(' ');
+      }
+    }
+
+    // Merge syllable splits
+    const merged = mergeSyllables(filtered);
+
+    // Final sanity check: line must have at least 2 letters and >2 chars total
+    if(merged.length > 2 && (merged.match(/[a-zA-ZäöüÄÖÜß]/g) || []).length >= 2){
+      outputLines.push(merged);
+    }
+  }
+
+  return outputLines.join('\n');
+}
+
 async function doOCR(file){
   const row=document.getElementById('ocr-row');
   const bar=document.getElementById('ocr-b');
@@ -728,7 +926,7 @@ async function doOCR(file){
     console.warn('Preprocess failed, using original:',err);
   }
 
-  // Step 2: OCR
+  // Step 2: OCR with improved config
   try{
     msg.textContent='🔍 Prepoznajem slova...';
     bar.style.width='30%';
@@ -741,12 +939,33 @@ async function doOCR(file){
         }
       }
     });
-    const {data:{text}}=await w.recognize(inputForOCR);
+    /* OCR config tuning for German worksheets:
+       - tessedit_pageseg_mode 6 = "single uniform block of text" — works
+         better than auto for worksheets with mixed prose+tables
+       - tessedit_char_whitelist limits chars to expected German + punct,
+         eliminates gibberish characters from misread shapes/borders
+       - tessedit_ocr_engine_mode 1 = LSTM-only, more accurate for printed text */
+    await w.setParameters({
+      tessedit_pageseg_mode: '6',
+      tessedit_char_whitelist:
+        'abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ0123456789 .,!?;:-„"\'()',
+      tessedit_ocr_engine_mode: '1',
+    });
+    const result = await w.recognize(inputForOCR);
     await w.terminate();
     bar.style.width='100%';
-    const c=text.split('\n').map(l=>l.trim()).filter(l=>l.length>1 && (l.match(/[a-zA-ZäöüÄÖÜß]/g)||[]).length>=2).join('\n');
-    document.getElementById('de-ta').value=c;
-    msg.textContent= c.length>0 ? '✅ Gotovo! Provjeri tekst i ispravi ako treba.' : '⚠️ Ništa nisam prepoznao. Slikaj bliže i ravnije.';
+
+    // Use word-level data for confidence filtering
+    const words = (result.data && result.data.words) || [];
+    const lines = (result.data && result.data.lines) || [];
+    const rawText = result.data.text || '';
+
+    // Process the text
+    const cleaned = postProcessOCR(rawText, words, lines);
+    document.getElementById('de-ta').value = cleaned;
+    msg.textContent = cleaned.length>0
+      ? '✅ Gotovo! Provjeri tekst i ispravi ako treba.'
+      : '⚠️ Ništa nisam prepoznao. Slikaj bliže i ravnije.';
     enableBtns();
     if(!document.getElementById('hw-name').value.trim())
       document.getElementById('hw-name').value='Zadaća '+new Date().toLocaleDateString('hr-HR');
@@ -1294,3 +1513,4 @@ function burst(){
 </script>
 </body>
 </html>
+
