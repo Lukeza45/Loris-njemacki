@@ -1553,20 +1553,35 @@ function renderKaraHomeworkChips(){
   const wrap = document.getElementById('k-hw-switch');
   const container = document.getElementById('k-hw-chips');
   const hist = loadHistory();
-  // If only the current homework is saved (or nothing), no point showing
-  const others = hist.filter(h => h.id !== _currentHomeworkId);
-  if(others.length === 0){
-    wrap.style.display = 'none';
+
+  // Always show the section
+  wrap.style.display = 'block';
+
+  // Clear container ONCE
+  container.innerHTML = '';
+
+  if(!hist.length){
+    container.innerHTML = '<span style="font-size:12px;color:rgba(255,255,255,.5)">Nema zadaća</span>';
     return;
   }
-  wrap.style.display = 'block';
-  container.innerHTML = '';
-  // Show ALL other homeworks, not just 6 — kid scrolls horizontally
-  others.forEach(h => {
+
+  // Render ALL homeworks
+  hist.forEach(h => {
     const chip = document.createElement('div');
-    chip.className = 'k-hw-chip';
-    chip.innerHTML = `<span class="k-hw-chip-ic">📄</span><span class="k-hw-chip-name">${esc(h.name)}</span>`;
-    chip.onclick = () => switchKaraokeHomework(h);
+
+    const isActive = h.id === _currentHomeworkId;
+    chip.className = 'k-hw-chip' + (isActive ? ' active' : '');
+
+    chip.innerHTML = `
+      <span class="k-hw-chip-ic">📄</span>
+      <span class="k-hw-chip-name">${esc(h.name)}</span>
+    `;
+
+    // Only clickable if not current
+    if(!isActive){
+      chip.onclick = () => switchKaraokeHomework(h);
+    }
+
     container.appendChild(chip);
   });
 }
