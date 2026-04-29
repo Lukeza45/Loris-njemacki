@@ -394,7 +394,7 @@ textarea.has-ocr{border-color:var(--c2);background:#fffef5}
     </div>
     <div class="setup-actions">
       <button class="btn-primary" id="btn-go" onclick="prepare(false)" disabled>🎵 Čitaj!</button>
-      <button class="btn-sec" onclick="prepare(true)" id="btn-save" disabled>💾 Spremi</button>
+      <button class="btn-sec" onclick="prepare(true)" id="btn-save" disabled>💾 Spremi i Čitaj!</button>
     </div>
     <p class="note">✅ Besplatno · radi u Chromeu · bez prijave</p>
   </div>
@@ -1500,7 +1500,7 @@ function saveHomework(){
 function showHistory(){
   const hist=loadHistory(), list=document.getElementById('hist-list');
   list.innerHTML='';
-  if(!hist.length){ list.innerHTML='<div class="hist-empty">📭 Nema spremljenih zadaća.<br>Pritisni 💾 Spremi kada učitaš zadaću.</div>'; }
+  if(!hist.length){ list.innerHTML='<div class="hist-empty">📭 Nema spremljenih zadaća.<br>Pritisni 💾 Spremi i Čitaj! kada učitaš zadaću.</div>'; }
   else hist.forEach(h=>{
     const el=document.createElement('div'); el.className='hist-item';
     el.innerHTML=`<div class="hist-icon">📄</div><div class="hist-info"><div class="hist-title">${esc(h.name)}</div><div class="hist-date">${h.date}</div><div class="hist-count">${h.count} rečenica</div></div><button class="hist-del" onclick="deleteHistory(${h.id},event)">🗑</button>`;
